@@ -23,6 +23,8 @@ class videosCell: UITableViewCell {
         background.backgroundColor = .gray
         self.addSubview(background)
         background.Anchor(Top: topAnchor, Left: leftAnchor, Bottom: bottomAnchor, Right: rightAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: 0, Width: 0, Height: 0)
+        
+
 
         
     }

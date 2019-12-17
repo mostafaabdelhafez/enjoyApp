@@ -1,0 +1,6 @@
+framework module Pods_enjoyApp_enjoyAppUITests {
+  umbrella header "Pods-enjoyApp-enjoyAppUITests-umbrella.h"
+
+  export *
+  module * { export * }
+}
