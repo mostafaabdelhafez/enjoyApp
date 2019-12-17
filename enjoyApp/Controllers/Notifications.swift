@@ -16,7 +16,7 @@ class Notifications: UIViewController {
     
     override func viewDidLoad(){
         super.viewDidLoad()
-        
+        navigationController?.navigationBar.barTintColor = .purple
     }
     
 }

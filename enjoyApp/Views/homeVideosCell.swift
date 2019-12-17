@@ -13,6 +13,12 @@ class homeVideosCell: UITableViewCell {
         let v = UIView()
         return v
     }()
+    let settingButton:UIButton = {
+        let button = UIButton(type: .system)
+        button.imageView?.contentMode = .scaleAspectFit
+        button.setImage(#imageLiteral(resourceName: "Group 344").withRenderingMode(.alwaysOriginal), for: [])
+        return button
+    }()
     let thumbnail:UIImageView = {
         let image = UIImageView()
         image.isUserInteractionEnabled = true
@@ -133,7 +139,11 @@ class homeVideosCell: UITableViewCell {
         nameAndEmailstack.centerYAnchor.constraint(equalTo: artistImg.centerYAnchor, constant: 0).isActive = true
 
         self.addSubview(thumbsUpButton)
-        thumbsUpButton.Anchor(Top: nil, Left: nil, Bottom: nil, Right: self.rightAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: -8, Width: 60, Height: 20)
+        self.addSubview(settingButton)
+        settingButton.Anchor(Top: nil, Left: nil, Bottom: nil, Right: self.rightAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: -8, Width: 20, Height: 20)
+        settingButton.centerYAnchor.constraint(equalTo: artistImg.centerYAnchor, constant: 0).isActive = true
+
+        thumbsUpButton.Anchor(Top: nil, Left: nil, Bottom: nil, Right: settingButton.leftAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: -5, Width: 60, Height: 20)
         thumbsUpButton.centerYAnchor.constraint(equalTo: artistImg.centerYAnchor, constant: 0).isActive = true
         let eyeStack = UIStackView(arrangedSubviews: [eyeLabel,numberOfviews])
         eyeStack.axis = .horizontal

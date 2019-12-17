@@ -55,8 +55,11 @@ struct thumbsUp {
     var row:Int
     var isLiked = false
 }
-struct videoViewsandThumbs {
-    var views = 0
-    var thumb = 0
-    var id:Int
+class videoViewsandThumbs {
+    var views : Int
+    var thumb :Int
+    init(views:Int,thumb:Int) {
+        self.views = views
+        self.thumb = thumb
+    }
 }

@@ -12,10 +12,12 @@ import AVFoundation
 import Kingfisher
 import AVKit
 class Home: UIViewController {
-    var arrayofThumbsAndViews = [videoViewsandThumbs]()
+    var arrayofThumbs = [[Int:Int]]()
+    var arrayOfViews = [[Int:Int]]()
     var arrayOfVideos = [Video]()
     var sliderData = [String]()
     var arrayOfThumbsUp = [thumbsUp]()
+    var numberOfthumbs:Int?
     let badgeLabel : UILabel = {
         let label = UILabel(frame: CGRect(x: 15, y: -5, width: 18, height: 18))
         label.layer.borderColor = UIColor.clear.cgColor
@@ -120,11 +122,16 @@ class Home: UIViewController {
                 if code == 200{
                     for i in 0..<videos!.count{
                         self.arrayOfThumbsUp.append(thumbsUp(row:i, isLiked: videos![i].liked))
+                        let numOfViews = [videos![i].id:videos![i].views] as [Int:Int]
+                        let numOfThumbs = [videos![i].id:videos![i].likes] as [Int:Int]
+                        self.arrayOfViews.append(numOfViews)
+                        self.arrayofThumbs.append(numOfThumbs)
+                        
+//                        self.arrayofThumbsAndViews.append(dict)
                     }
+                    
                     if adIMG != nil , adIMG != "" {
-                        
 //                        self.footerImg.isHidden = true
-                        
                         let encodedImg = adIMG!.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
                         if let url = URL(string: encodedImg!){
                             self.footerImg.kf.indicatorType = .activity
@@ -159,6 +166,7 @@ class Home: UIViewController {
     }
     override func viewWillDisappear(_ animated: Bool) {
         navigationController?.isNavigationBarHidden = false
+        navigationItem.title = ""
 
     }
     override func viewWillAppear(_ animated: Bool) {
@@ -235,19 +243,92 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
     }
     @objc func handleThumbs(thumbsUpButton:UIButton){
 //        self.arrayOfThumbsUp.append((thumbsUp(row: thumbsUpButton.tag, isLiked: true)))
-
+//        var dict : [Int:Int]?
+//        for i in 0..<arrayofThumbs.count - 1{
+//            if arrayofThumbs[i].keys.first == arrayOfVideos[thumbsUpButton.tag].id{
+//
+//                arrayofThumbs.remove(at: i)
+//                print(arrayofThumbs.count)
+//
+//
+//                dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes]
+//                arrayofThumbs.append(dict!)
+//                print(arrayofThumbs.count)
+//
+//            }
+//        }
         arrayOfThumbsUp[thumbsUpButton.tag].isLiked = !arrayOfThumbsUp[thumbsUpButton.tag].isLiked
         if arrayOfThumbsUp[thumbsUpButton.tag].isLiked{
             thumbsUpButton.setImage(#imageLiteral(resourceName: "Group 365").withRenderingMode(.alwaysOriginal), for: [])
+            if  let cell = videosTableView.cellForRow(at: IndexPath(row: thumbsUpButton.tag, section: 0)) as? homeVideosCell {
+                
+//                if numberOfthumbs == nil {
+//                    numberOfthumbs = arrayOfVideos[thumbsUpButton.tag].likes
+//                    numberOfthumbs! += 1
+//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
+//                }
+//                else{
+//                    numberOfthumbs! += 1
+//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
+//
+//                }
+//                let thumbs = dict?.keys.first
+                if arrayOfVideos[thumbsUpButton.tag].liked {
+                    cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes)"
+                }
+                else{
+                    cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes + 1)"
+
+                }
+
+                cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes + 1)"
+
+            }
         }
         else{
             thumbsUpButton.setImage(#imageLiteral(resourceName: "thumbs-up").withRenderingMode(.alwaysOriginal), for: [])
+            if let cell = videosTableView.cellForRow(at: IndexPath(row: thumbsUpButton.tag, section: 0)) as? homeVideosCell{
+                
+//                let thumbs = dict?.keys.first
+                if arrayOfVideos[thumbsUpButton.tag].liked {
+                    cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes - 1)"
+                }
+                else{
+                    cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes )"
+
+                }
+//                if numberOfthumbs == nil {
+//                    numberOfthumbs = arrayOfVideos[thumbsUpButton.tag].likes
+//                    numberOfthumbs! -= 1
+//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
+//
+//                }
+//                else{
+//                    numberOfthumbs! -= 1
+//
+//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
+//
+//                }
+
+            }
+
         }
         for data in arrayOfThumbsUp{
             print(data.isLiked)
             
         }
         
+//        for i in 0 ..< arrayOfVideos.count{
+//            if self.arrayofThumbs[thumbsUpButton.tag].keys.first == arrayOfVideos[i].id{
+//                print(arrayofThumbs.count)
+//
+//                arrayofThumbs.remove(at: thumbsUpButton.tag).keys.first
+//                print(arrayofThumbs.count)
+//
+//
+//            }
+//        }
+//
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "videosHeaderForSlider") as! videosHeaderForSlider
@@ -275,9 +356,15 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
             let player = AVPlayer(url: url)
             let controller = AVPlayerViewController()
             controller.player = player
-            present(controller, animated: true) {
-                <#code#>
+            present(controller, animated: true){
+                
+                player.play()
+                if let cell = self.videosTableView.cellForRow(at: indexPath) as? homeVideosCell{
+                    cell.numberOfviews.text = "\(self.arrayOfVideos[indexPath.row].views + 1)"
+                }
             }
+            
+        
             
 
     }

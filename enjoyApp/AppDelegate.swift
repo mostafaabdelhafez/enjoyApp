@@ -17,7 +17,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         
+        UINavigationBar.appearance().backIndicatorImage = #imageLiteral(resourceName: "shape1").withRenderingMode(.alwaysOriginal)
         
+        UINavigationBar.appearance().backIndicatorTransitionMaskImage = #imageLiteral(resourceName: "shape1").withRenderingMode(.alwaysOriginal)
+    UIBarButtonItem.appearance().setBackButtonTitlePositionAdjustment(UIOffset(horizontal: 0, vertical:0), for: .default)
+
         
         return true
     }
