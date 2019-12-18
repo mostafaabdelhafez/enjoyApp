@@ -11,10 +11,16 @@ import SideMenu
 import AVFoundation
 import Kingfisher
 import AVKit
+import RealmSwift
+import Realm
 class Home: UIViewController {
+    
+    let realm = try! Realm()
     var arrayofThumbs = [[Int:Int]]()
     var arrayOfViews = [[Int:Int]]()
     var arrayOfVideos = [Video]()
+    var likesArray = [likesObject]()
+    var viewsArray = [viewsObject]()
     var sliderData = [String]()
     var arrayOfThumbsUp = [thumbsUp]()
     var numberOfthumbs:Int?
@@ -103,7 +109,6 @@ class Home: UIViewController {
         notificationButton.addSubview(badgeLabel)
 //        videosTableView.addSubview(footerImg)
 //        footerImg.Anchor(Top: nil, Left: view.leftAnchor, Bottom: videosTableView.bottomAnchor, Right: view.rightAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: 0, Width: 0, Height: 100)
-        
     }
     let footerImg : UIImageView = {
         let image = UIImageView()
@@ -113,25 +118,31 @@ class Home: UIViewController {
     func loadData(){
         APIHelper.APICore.loadHome { (videos, code,adIMG,slider) in
             if videos != nil {
-                
                 if slider != nil {
                     print(slider!.count)
-                    
                     self.sliderData = slider!
                 }
+                
                 if code == 200{
                     for i in 0..<videos!.count{
                         self.arrayOfThumbsUp.append(thumbsUp(row:i, isLiked: videos![i].liked))
-                        let numOfViews = [videos![i].id:videos![i].views] as [Int:Int]
-                        let numOfThumbs = [videos![i].id:videos![i].likes] as [Int:Int]
-                        self.arrayOfViews.append(numOfViews)
-                        self.arrayofThumbs.append(numOfThumbs)
-                        
-//                        self.arrayofThumbsAndViews.append(dict)
+                        let likes = likesObject()
+                        likes.id = videos![i].id
+                        likes.likes = videos![i].likes
+                        self.likesArray.append(likes)
+                        if self.viewsArray.isEmpty || self.viewsArray.count < videos!.count{
+                            
+                            let views = viewsObject()
+                            views.id = videos![i].id
+                            views.views = videos![i].views
+                            self.viewsArray.append(views)
+                        }
+                    }
+                    try! self.realm.write {
+                        self.realm.add(self.viewsArray)
                     }
                     
                     if adIMG != nil , adIMG != "" {
-//                        self.footerImg.isHidden = true
                         let encodedImg = adIMG!.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed)
                         if let url = URL(string: encodedImg!){
                             self.footerImg.kf.indicatorType = .activity
@@ -175,6 +186,14 @@ class Home: UIViewController {
     }
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        let result = realm.objects(viewsObject.self)
+        for i in 0..<result.count{
+            
+            self.viewsArray.append(result[i])
+        }
+        print(viewsArray.count)
+        
         navigationController?.isNavigationBarHidden = true
         setupSideMenu()
         loadData()
@@ -182,6 +201,7 @@ class Home: UIViewController {
         view.backgroundColor = .white
         setupConstraints()
     }
+    
     override var preferredStatusBarStyle: UIStatusBarStyle{
         return .lightContent
     }
@@ -227,7 +247,6 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
             cell.artistImg.kf.indicatorType = .activity
         }
         if arrayOfVideos[indexPath.row].liked {
-            
             cell.thumbsUpButton.setImage(#imageLiteral(resourceName: "Group 365").withRenderingMode(.alwaysOriginal), for: [])
         }
         else{
@@ -235,100 +254,99 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
             cell.thumbsUpButton.setImage(#imageLiteral(resourceName: "thumbs-up").withRenderingMode(.alwaysOriginal), for: [])
 
         }
+        if self.viewsArray.count > 0 {
+            print(self.viewsArray.count)
+            
+            cell.numberOfviews.text = "\(viewsArray[indexPath.row].views)"
+//            cell.numberOfviews.text = "\(arrayOfVideos[indexPath.row].views)"
+        }
+        else{
+            cell.numberOfviews.text = "\(arrayOfVideos[indexPath.row].views)"
+
+        }
         cell.numberofthumbsUp.text = "\(arrayOfVideos[indexPath.row].likes)"
-        cell.numberOfviews.text = "\(arrayOfVideos[indexPath.row].views)"
         cell.thumbsUpButton.tag = indexPath.row
         cell.thumbsUpButton.addTarget(self, action: #selector(handleThumbs(thumbsUpButton:)), for: .touchUpInside)
         return cell
     }
+    
     @objc func handleThumbs(thumbsUpButton:UIButton){
-//        self.arrayOfThumbsUp.append((thumbsUp(row: thumbsUpButton.tag, isLiked: true)))
-//        var dict : [Int:Int]?
-//        for i in 0..<arrayofThumbs.count - 1{
-//            if arrayofThumbs[i].keys.first == arrayOfVideos[thumbsUpButton.tag].id{
-//
-//                arrayofThumbs.remove(at: i)
-//                print(arrayofThumbs.count)
-//
-//
-//                dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes]
-//                arrayofThumbs.append(dict!)
-//                print(arrayofThumbs.count)
-//
-//            }
-//        }
         arrayOfThumbsUp[thumbsUpButton.tag].isLiked = !arrayOfThumbsUp[thumbsUpButton.tag].isLiked
         if arrayOfThumbsUp[thumbsUpButton.tag].isLiked{
             thumbsUpButton.setImage(#imageLiteral(resourceName: "Group 365").withRenderingMode(.alwaysOriginal), for: [])
             if  let cell = videosTableView.cellForRow(at: IndexPath(row: thumbsUpButton.tag, section: 0)) as? homeVideosCell {
                 
-//                if numberOfthumbs == nil {
-//                    numberOfthumbs = arrayOfVideos[thumbsUpButton.tag].likes
-//                    numberOfthumbs! += 1
-//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
-//                }
-//                else{
-//                    numberOfthumbs! += 1
-//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
-//
-//                }
-//                let thumbs = dict?.keys.first
                 if arrayOfVideos[thumbsUpButton.tag].liked {
+                    let dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes ]
+                    for i in 0..<arrayofThumbs.count{
+                        if arrayofThumbs[i].keys.first == dict.keys.first{
+                            arrayofThumbs.remove(at: i)
+                            arrayofThumbs.append(dict)
+                            cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes)"
+
+                            return
+                        }
+                    }
+                    arrayofThumbs.append(dict)
                     cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes)"
                 }
                 else{
+                    let dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes + 1 ]
+                    for i in 0..<arrayofThumbs.count{
+                        if arrayofThumbs[i].keys.first == dict.keys.first{
+                            arrayofThumbs.remove(at: i)
+                            arrayofThumbs.append(dict)
+                            cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes + 1)"
+
+                            return
+                        }
+                    }
+                    arrayofThumbs.append(dict)
                     cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes + 1)"
-
                 }
-
-                cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes + 1)"
-
             }
         }
         else{
             thumbsUpButton.setImage(#imageLiteral(resourceName: "thumbs-up").withRenderingMode(.alwaysOriginal), for: [])
             if let cell = videosTableView.cellForRow(at: IndexPath(row: thumbsUpButton.tag, section: 0)) as? homeVideosCell{
                 
-//                let thumbs = dict?.keys.first
                 if arrayOfVideos[thumbsUpButton.tag].liked {
+                    let dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes - 1 ]
+                    for i in 0..<arrayofThumbs.count{
+                        if arrayofThumbs[i].keys.first == dict.keys.first{
+                            arrayofThumbs.remove(at: i)
+                            arrayofThumbs.append(dict)
+                            cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes - 1)"
+                            return
+                        }
+                    }
+                    arrayofThumbs.append(dict)
+                    
                     cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes - 1)"
                 }
                 else{
+                    let dict = [arrayOfVideos[thumbsUpButton.tag].id:arrayOfVideos[thumbsUpButton.tag].likes]
+                    for i in 0..<arrayofThumbs.count{
+                        if arrayofThumbs[i].keys.first == dict.keys.first{
+                            arrayofThumbs.remove(at: i)
+                            arrayofThumbs.append(dict)
+                            cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes)"
+                            return
+                        }
+                    }
+                    arrayofThumbs.append(dict)
+
                     cell.numberofthumbsUp.text = "\(arrayOfVideos[thumbsUpButton.tag].likes )"
 
                 }
-//                if numberOfthumbs == nil {
-//                    numberOfthumbs = arrayOfVideos[thumbsUpButton.tag].likes
-//                    numberOfthumbs! -= 1
-//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
-//
-//                }
-//                else{
-//                    numberOfthumbs! -= 1
-//
-//                    cell.numberofthumbsUp.text = "\(numberOfthumbs!)"
-//
-//                }
-
             }
-
-        }
-        for data in arrayOfThumbsUp{
-            print(data.isLiked)
             
         }
         
-//        for i in 0 ..< arrayOfVideos.count{
-//            if self.arrayofThumbs[thumbsUpButton.tag].keys.first == arrayOfVideos[i].id{
-//                print(arrayofThumbs.count)
-//
-//                arrayofThumbs.remove(at: thumbsUpButton.tag).keys.first
-//                print(arrayofThumbs.count)
-//
-//
-//            }
-//        }
-//
+        for data in arrayOfThumbsUp{
+            print(data.isLiked)
+        }
+        
     }
     func tableView(_ tableView: UITableView, viewForHeaderInSection section: Int) -> UIView? {
         let header = tableView.dequeueReusableHeaderFooterView(withIdentifier: "videosHeaderForSlider") as! videosHeaderForSlider
@@ -351,16 +369,30 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
         return footerImg
     }
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
         if let url = URL(string:arrayOfVideos[indexPath.row].video){
             
             let player = AVPlayer(url: url)
             let controller = AVPlayerViewController()
             controller.player = player
             present(controller, animated: true){
-                
                 player.play()
+                
                 if let cell = self.videosTableView.cellForRow(at: indexPath) as? homeVideosCell{
-                    cell.numberOfviews.text = "\(self.arrayOfVideos[indexPath.row].views + 1)"
+                    cell.numberOfviews.text = "\(self.viewsArray[indexPath.row].views + 1)"
+                    
+                    try! self.realm.write {
+                        
+                        self.viewsArray[indexPath.row].views += 1
+                        let result = self.realm.objects(viewsObject.self)
+                        for i in 0..<result.count{
+                            if result[i].id == self.viewsArray[indexPath.row].id{
+                                
+                                result[i].views = self.viewsArray[indexPath.row].views
+                            }
+                        }
+                    }
+                    
                 }
             }
             

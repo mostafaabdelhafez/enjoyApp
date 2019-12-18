@@ -11,6 +11,8 @@ target 'enjoyApp' do
   pod 'Alamofire'
   pod 'SwiftyJSON'
   pod 'Kingfisher'
+  pod ‘RealmSwift’
+
 
 
   target 'enjoyAppTests' do

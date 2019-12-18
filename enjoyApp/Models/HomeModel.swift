@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RealmSwift
 class Video{
     var id:Int
     var video:String
@@ -30,6 +31,18 @@ class Video{
         self.artist = artist
     }
 }
+class viewsObject:Object{
+   @objc dynamic var views = 0
+   @objc dynamic var id = 0
+
+}
+class likesObject:Object{
+   @objc dynamic var likes = 0
+   @objc dynamic var id = 0
+
+}
+
+
 class category{
     var id:Int
     var name:String
