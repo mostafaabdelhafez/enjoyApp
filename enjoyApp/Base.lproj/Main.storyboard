@@ -125,7 +125,6 @@
                         <constraints>
                             <constraint firstItem="ZdJ-L9-cLH" firstAttribute="centerY" secondItem="8Mu-0o-JfB" secondAttribute="centerY" id="PPM-Ny-AIp"/>
                             <constraint firstItem="ZdJ-L9-cLH" firstAttribute="leading" secondItem="iXD-Pg-wvO" secondAttribute="leading" id="fyf-HF-6av"/>
-                            <constraint firstItem="ZdJ-L9-cLH" firstAttribute="centerX" secondItem="8Mu-0o-JfB" secondAttribute="centerX" id="iSf-dU-xki"/>
                             <constraint firstItem="iXD-Pg-wvO" firstAttribute="trailing" secondItem="ZdJ-L9-cLH" secondAttribute="trailing" id="sVl-ve-axb"/>
                         </constraints>
                         <viewLayoutGuide key="safeArea" id="iXD-Pg-wvO"/>
@@ -162,6 +161,7 @@
             <objects>
                 <navigationController storyboardIdentifier="sideMenuController" automaticallyAdjustsScrollViewInsets="NO" id="Eg6-7Z-4tY" customClass="SideMenuNavigationController" customModule="SideMenu" sceneMemberID="viewController">
                     <toolbarItems/>
+                    <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" insetsLayoutMarginsFromSafeArea="NO" id="XAY-aE-zlx">
                         <rect key="frame" x="0.0" y="44" width="414" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
@@ -169,6 +169,9 @@
                     <nil name="viewControllers"/>
                     <userDefinedRuntimeAttributes>
                         <userDefinedRuntimeAttribute type="boolean" keyPath="leftSide" value="YES"/>
+                        <userDefinedRuntimeAttribute type="number" keyPath="statusBarEndAlpha">
+                            <real key="value" value="0.0"/>
+                        </userDefinedRuntimeAttribute>
                     </userDefinedRuntimeAttributes>
                     <connections>
                         <segue destination="SXK-2v-ped" kind="relationship" relationship="rootViewController" id="GBC-Gi-19f"/>

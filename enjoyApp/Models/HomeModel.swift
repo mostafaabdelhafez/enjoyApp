@@ -39,6 +39,8 @@ class viewsObject:Object{
 class likesObject:Object{
    @objc dynamic var likes = 0
    @objc dynamic var id = 0
+    @objc dynamic var isLiked = false
+
 
 }
 

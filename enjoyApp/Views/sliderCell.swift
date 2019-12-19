@@ -14,9 +14,9 @@ class sliderCell: UICollectionViewCell {
         v.clipsToBounds = true
         v.layer.cornerRadius = 15
         v.backgroundColor = .black
-        
         return v
     }()
+    
     let playIcon:UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
@@ -33,7 +33,6 @@ class sliderCell: UICollectionViewCell {
         playIcon.Anchor(Top: nil, Left: nil, Bottom: nil, Right: nil, TopPadding: 0, LeftPadding: 0, BottomPadding: 0, RightPadding: 0, Width: 40, Height: 40)
         playIcon.centerXAnchor.constraint(equalTo: background.centerXAnchor, constant: 0).isActive = true
         playIcon.centerYAnchor.constraint(equalTo: background.centerYAnchor, constant: 0).isActive = true
-
     }
     
     required init?(coder: NSCoder) {
