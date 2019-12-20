@@ -207,6 +207,8 @@ class Home: UIViewController {
         let likes = realm.objects(likesObject.self)
         for i in 0..<likes.count{
             self.likesArray.append(likes[i])
+            let selectedThumbs = selectedThumbsUp(row: i, isSelected: likes[i].isLiked)
+            self.arrayOFselectedThumbsUp.append(selectedThumbs)
         }
 
         print(viewsArray.count)
@@ -352,7 +354,11 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
         
         if likesArray[thumbsUpButton.tag].isLiked{
             
-            thumbsUpButton.setImage(#imageLiteral(resourceName: "Group 365").withRenderingMode(.alwaysOriginal), for: [])
+            UIView.transition(with: thumbsUpButton, duration: 0.6, options: .transitionCurlDown, animations: {
+                thumbsUpButton.setImage(#imageLiteral(resourceName: "Group 365").withRenderingMode(.alwaysOriginal), for: [])
+            }
+         )
+            
             
             if arrayOFselectedThumbsUp.count == 0 {
                 let oneSelectedThumbsup = selectedThumbsUp(row: thumbsUpButton.tag, isSelected: true)
@@ -418,8 +424,10 @@ extension Home:UITableViewDataSource,UITableViewDelegate{
             
         else{
             
-            
-            thumbsUpButton.setImage(#imageLiteral(resourceName: "thumbs-up").withRenderingMode(.alwaysOriginal), for: [])
+            UIView.transition(with: thumbsUpButton, duration: 0.6, options: .transitionCurlUp, animations: {
+                thumbsUpButton.setImage(#imageLiteral(resourceName: "thumbs-up").withRenderingMode(.alwaysOriginal), for: [])
+            }
+        )
             
             if arrayOFselectedThumbsUp.count == 0 {
                 let oneSelectedThumbsup = selectedThumbsUp(row: thumbsUpButton.tag, isSelected: false)
