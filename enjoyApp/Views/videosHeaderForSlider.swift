@@ -32,7 +32,7 @@ class videosHeaderForSlider: UITableViewHeaderFooterView {
     
     func setupConstraints(){
         self.addSubview(sliderCollectionView)
-        sliderCollectionView.Anchor(Top: self.topAnchor, Left: self.leftAnchor, Bottom: self.bottomAnchor, Right: self.rightAnchor, TopPadding: 0, LeftPadding: 0, BottomPadding: -50, RightPadding: 0, Width: 0, Height: 0)
+        sliderCollectionView.Anchor(Top: self.topAnchor, Left: self.leftAnchor, Bottom: self.bottomAnchor, Right: self.rightAnchor, TopPadding: 0, LeftPadding: 4, BottomPadding: -50, RightPadding: -4, Width: 0, Height: 0)
         self.addSubview(PageController)
         PageController.Anchor(Top: sliderCollectionView.bottomAnchor, Left: self.leftAnchor, Bottom: nil, Right: self.rightAnchor, TopPadding: 8, LeftPadding: 0, BottomPadding: 0, RightPadding: 0, Width: 0, Height: 0)
     }
